@@ -82,10 +82,16 @@ for tag, url in links.items():
 
 # finalize, save places and tags
 for url, place in places.items():
-    log('saving', place['geocoded']['name'])
+    name = place['geocoded']['name']
+    log('saving', name)
     place_id = db.insert_update('places', place['geocoded'])
+    
     for tag_id in place['tags']:
         db.insert_update('has_tag', {'place_id': place_id, 'tag_id': tag_id}, last_id=False)
+    
+    article_id = db.insert_update('articles', {'title': name, 'url': url, 'source_id': source_id})
+    db.insert_update('is_about', {'place_id': place_id, 'article_id': article_id}, last_id=False)
+    
     db.commit()
         
             
