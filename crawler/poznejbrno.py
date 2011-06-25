@@ -16,7 +16,7 @@ import re
 
 # connect to db
 db = Database()
-source_id = db.query('SELECT id FROM sources WHERE url = %s', ('http://poznejbrno.cz',))[0]['id']
+source_id = db.insert_update('sources', {'url': 'http://poznejbrno.cz'})
 
 # fetch all article urls
 url = 'http://poznejbrno.cz/page/%s'

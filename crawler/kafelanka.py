@@ -14,7 +14,7 @@ import re
 
 # connect to db
 db = Database()
-source_id = db.query('SELECT id FROM sources WHERE url = %s', ('http://www.kafelanka.cz',))[0]['id']
+source_id = db.insert_update('sources', {'url': 'http://www.kafelanka.cz'})
 
 # prepare
 r_coord = re.compile(ur'mista\[\d+\]\s*=\s*new Array\("([\d\.]+)°([\d\.]+)\\\'([\d\.])[^"]+"N;\s+([\d\.]+)°([\d\.]+)\\\'([\d\.]+)\\"E", (\d+), "([^"]+)", "([^"]+)", "([^"]+)"\);')

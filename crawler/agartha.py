@@ -14,7 +14,7 @@ import re
 
 # connect to db
 db = Database()
-source_id = db.query('SELECT id FROM sources WHERE url = %s', ('http://www.agartha.cz',))[0]['id']
+source_id = db.insert_update('sources', {'url': 'http://www.agartha.cz'})
 
 # prepare
 tag_id = db.insert_update('tags', {'name': u'podzemí', 'slug': 'podzemi'})
