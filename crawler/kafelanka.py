@@ -56,4 +56,6 @@ for match in re.findall(r'href="(mapa\.php\?ceho=[^"]+)"', Downloader('http://ka
         
         db.commit()
     
+    break # apparently, all places are listed on every page
+    
     
