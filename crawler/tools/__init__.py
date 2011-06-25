@@ -9,6 +9,11 @@ import unicodedata
 
 
 
+def dmsToDec(deg, min, sec):
+    return int(deg) + (((int(min) * 60) + (float(sec))) / 3600)
+    
+    
+    
 def log(type, text):
     print '[%s] %s' % (type, text)
 
