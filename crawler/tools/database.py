@@ -24,7 +24,7 @@ class Database(object):
         warnings.filterwarnings('error', category=db.Warning)
         self.insert_id = None
     
-    def _execute(self, sql, params=None):
+    def execute(self, sql, params=None):
         cursor = self.conn.cursor(DictCursor)
         cursor.execute(sql, params)
         self.insert_id = self.conn.insert_id()
@@ -42,7 +42,7 @@ class Database(object):
         return values
 
     def query(self, sql, params=None):
-        cursor = self._execute(sql, params)
+        cursor = self.execute(sql, params)
         return cursor.fetchall()
     
     def insert_update(self, table, data, last_id=True):
@@ -65,7 +65,7 @@ class Database(object):
         sql = sql % ((table,) + tuple(columns) + (insert_format_strings,) + (update_format_strings,))
         params = tuple(values) + tuple(values)
 
-        self._execute(sql, params)
+        self.execute(sql, params)
         if last_id:
             return self.insert_id
     
