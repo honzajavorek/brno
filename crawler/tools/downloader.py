@@ -26,8 +26,8 @@ class Downloader(object):
     def _fetch(self):
         return urllib2.urlopen(self.url).read()
         
-    def text(self):
-        return self._fetch()
+    def text(self, encoding='utf8'):
+        return unicode(self._fetch(), encoding)
     
     def json(self):
         return json.loads(self._fetch())

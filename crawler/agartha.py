@@ -28,7 +28,7 @@ BIAS = {u'U Sedmi Švábů': u'Kopečná 37',
         u'Rosické nádraží': u''}
 
 # fetch all article urls
-for match in re.finditer(r'href="(http://agartha.cz/[^"]+/brno/[^"]+/)index.php">([^<]+)', unicode(Downloader('http://agartha.cz/html/pruzkumy/brno/').text(), 'cp1250')):
+for match in re.finditer(r'href="(http://agartha.cz/[^"]+/brno/[^"]+/)index.php">([^<]+)', Downloader('http://agartha.cz/html/pruzkumy/brno/').text('cp1250')):
     title = match.group(2).strip()
     url = match.group(1)
     

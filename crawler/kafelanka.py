@@ -23,10 +23,10 @@ place_tag_id = db.insert_update('tags', {'name': u'Kafélanka', 'slug': 'kafelan
 former_place_tag_id = db.insert_update('tags', {'name': u'zaniklé místo', 'slug': 'zanikle-misto'})
 
 # fetch all article urls
-for match in re.findall(r'href="(mapa\.php\?ceho=[^"]+)"', Downloader('http://kafelanka.wz.cz/mista/').text()):
+for match in re.findall(r'href="(mapa\.php\?ceho=[^"]+)"', Downloader('http://kafelanka.wz.cz/mista/').text('cp1250')):
     log('map', match)
     url = 'http://kafelanka.cz/mista/%s' % match
-    html = unicode(Downloader(url).text(), 'cp1250')
+    html = Downloader(url).text('cp1250')
     
     for data in r_coord.finditer(html):
         log('place', data.group(8))
