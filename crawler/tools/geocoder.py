@@ -58,8 +58,10 @@ class Geocoder(object):
         
         # fetching from Google
         data = Downloader(bounded_url, self.query).json()
-        
-        if data.get('status', '') == 'OK':
+
+        if data.get('status', '') == 'OK' \
+            and data['results'][0]['address_components'][0]['long_name'] != 'Brno':
+            
             coords = data['results'][0]['geometry']['location']
             lat = self._normalize_coord(coords['lat'])
             lng = self._normalize_coord(coords['lng'])
