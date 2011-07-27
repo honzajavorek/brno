@@ -17,7 +17,7 @@ class GoogleMaps(object):
             key, value = param.split('=')
             if key == 'q':
                 # http://stackoverflow.com/questions/5139249/python-url-unquote-unicode
-                return urllib.unquote_plus(value.encode('ascii')).decode('utf8')
+                return urllib.unquote_plus(value.encode('utf8')).decode('utf8')
 
 
         

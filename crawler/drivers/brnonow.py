@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""Crawles over poznejbrno.cz."""
+"""Crawles over brnonow.com."""
 
 
 
@@ -18,13 +18,13 @@ import re
 def run():
     # connect to db
     db = Database()
-    source_id = db.insert_update('sources', {'url': 'http://poznejbrno.cz'})
+    source_id = db.insert_update('sources', {'url': 'http://brnonow.com'})
     
     # prepare
-    tag_ids = [Tag('article').get_id()]
+    tag_ids = [Tag('article').get_id(), Tag('english').get_id()]
     
     # fetch all article urls
-    url = 'http://poznejbrno.cz/page/%s'
+    url = 'http://brnonow.com/page/%s'
     articles = []
     for i in range(1000):
         log('page', i)
@@ -47,7 +47,7 @@ def run():
         log('article', url)
         try:
             html = Downloader(url).html()
-            links = html.findAll(lambda tag: tag.name == 'a' and re.match(r'http://local\.google\.com/maps', tag.get('href', ''))) 
+            links = html.findAll(lambda tag: tag.name == 'a' and re.match(r'http://[^\.]+\.google\.[^/]+/maps', tag.get('href', ''))) 
             
             # get title & save article
             title = unicode(decode_unicode_entities(html.find('h1', 'entry-title').string))
@@ -72,7 +72,7 @@ def run():
                 
         except HTMLParseError:
             log('error', 'parsing failure, skipping')
-        
+            
         except AttributeError:
             log('error', 'attribute error, skipping')
         

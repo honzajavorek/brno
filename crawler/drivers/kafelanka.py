@@ -4,10 +4,11 @@
 
 
 
-from tools import log, dmsToDec
+from tools import log
 from tools.database import Database
 from tools.downloader import Downloader
 from tools.geocoder import Geocoder
+from tools.tag import Tag
 import re
 
 
@@ -18,10 +19,10 @@ def run():
     source_id = db.insert_update('sources', {'url': 'http://www.kafelanka.cz'})
     
     # prepare
-    r_coord = re.compile(ur'mista\[\d+\]\s*=\s*new Array\("([\d\.]+)°([\d\.]+)\\\'([\d\.])[^"]+"N;\s+([\d\.]+)°([\d\.]+)\\\'([\d\.]+)\\"E", (\d+), "([^"]+)", "([^"]+)", "([^"]+)"\);')
+    r_coord = re.compile(ur'mista\[\d+\]\s*=\s*new Array\(([\d\-\.]+),\s+([\d\-\.]+),([^,]+), "([^"]+)", "([^"]+)", "([^"]+)"\);')
     
-    place_tag_id = db.insert_update('tags', {'name': u'Kafélanka', 'slug': 'kafelanka'})
-    former_place_tag_id = db.insert_update('tags', {'name': u'zaniklé místo', 'slug': 'zanikle-misto'})
+    place_tag_id = Tag('kafelanka').get_id()
+    former_place_tag_id = Tag('former-kafelanka').get_id()
     
     # fetch all article urls
     for match in re.findall(r'href="(mapa\.php\?ceho=[^"]+)"', Downloader('http://kafelanka.wz.cz/mista/').text('cp1250')):
@@ -30,25 +31,25 @@ def run():
         html = Downloader(url).text('cp1250')
         
         for data in r_coord.finditer(html):
-            log('place', data.group(8))
+            log('place', data.group(4))
             
             tag_ids = [place_tag_id]
-            if data.group(7) == 2:
+            if data.group(3).strip(', "\'') == 'neni':
                 tag_ids.append(former_place_tag_id)
             
-            lat = str(dmsToDec(data.group(1), data.group(2), data.group(3)))
-            lng = str(dmsToDec(data.group(4), data.group(5), data.group(6)))
+            lat = str(float(data.group(1)))
+            lng = str(float(data.group(2)))
             
-            name = data.group(8)
+            name = data.group(4)
             
             geocoded = Geocoder(','.join((lat, lng)), resolve_coords=False).fetch()
             geocoded['name'] = name
             
-            article_url = 'http://kafelanka.cz/mista/%s' % data.group(9)
-            photo_url = 'http://kafelanka.cz/mista/foto/%s' % data.group(10)
+            article_url = 'http://kafelanka.cz/mista/%s' % data.group(5)
+            photo_url = 'http://kafelanka.cz/mista/foto/%s' % data.group(6)
             
             place_id = db.insert_update('places', geocoded)
-            article_id = db.insert_update('articles', {'title': name, 'url': article_url, 'source_id': source_id})
+            article_id = db.insert_update('articles', {'title': name, 'url': article_url, 'photo_url': photo_url, 'source_id': source_id})
             
             # save relations
             for id in tag_ids:

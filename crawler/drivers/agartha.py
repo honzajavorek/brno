@@ -8,6 +8,7 @@ from tools import log
 from tools.database import Database
 from tools.downloader import Downloader
 from tools.geocoder import Geocoder
+from tools.tag import Tag
 import re
 
 
@@ -18,7 +19,7 @@ def run():
     source_id = db.insert_update('sources', {'url': 'http://www.agartha.cz'})
     
     # prepare
-    tag_id = db.insert_update('tags', {'name': u'podzemí', 'slug': 'podzemi'})
+    tag_id = Tag('agartha-research').get_id()
     
     BIAS = {u'U Sedmi Švábů': u'Kopečná 37',
             u'Zábrdovický kostel': u'Zábrdovická 1',
