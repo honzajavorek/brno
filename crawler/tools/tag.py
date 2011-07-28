@@ -30,9 +30,7 @@ class Tag(object):
                                      ('agartha-research', u'průzkum Agartha')]},
                  
                  'info': {'name': u'Články a tipy',
-                          'tags': [('article', u'článek'),
-                                   ('tip', u'tip'),
-                                   ('english', u'anglicky')]}}
+                          'tags': []}} # beware! tags are related to PLACES, not to ARTICLES
     
     def __init__(self, slug):
         self.db = Database()
@@ -47,8 +45,8 @@ class Tag(object):
         for category_slug, category in Tag.HIERARCHY.items():
             for tag_slug, tag_name in category['tags']:
                 if slug == tag_slug:
-                    category_id = self.db.insert_update('tag_categories', {'name': category['name'], 'slug': category_slug})
-                    tag_id = self.db.insert_update('tags', {'name': tag_name, 'slug': tag_slug, 'tag_category_id': category_id})
+                    category_id = self.db.insert_update('category', {'name': category['name'], 'slug': category_slug})
+                    tag_id = self.db.insert_update('tag', {'name': tag_name, 'slug': tag_slug, 'category_id': category_id})
                     break
         self.db.commit()
         return tag_id
@@ -71,11 +69,11 @@ class BeerTag(Tag):
         slug = slugify(beer_name)
         
         if not BeerTag._CATEGORY_ID:
-            BeerTag._CATEGORY_ID = self.db.insert_update('tag_categories', {'name': Tag.HIERARCHY['beer']['name'], 'slug': 'beer'});
+            BeerTag._CATEGORY_ID = self.db.insert_update('category', {'name': Tag.HIERARCHY['beer']['name'], 'slug': 'beer'});
         if slug in BeerTag._CACHE:
             tag_id = BeerTag._CACHE[slug]
         else:
-            tag_id = self.db.insert_update('tags', {'name': beer_name, 'slug': slug, 'tag_category_id': BeerTag._CATEGORY_ID})
+            tag_id = self.db.insert_update('tag', {'name': beer_name, 'slug': slug, 'category_id': BeerTag._CATEGORY_ID})
             BeerTag.CACHE[slug] = tag_id
             Tag.HIERARCHY['beer']['tags'].append((slug, beer_name))
         self.db.commit()

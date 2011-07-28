@@ -10,7 +10,6 @@ from tools.database import Database
 from tools.downloader import Downloader
 from tools.geocoder import Geocoder
 from tools.googlemaps import GoogleMaps
-from tools.tag import Tag
 import re
 
 
@@ -18,10 +17,7 @@ import re
 def run():
     # connect to db
     db = Database()
-    source_id = db.insert_update('sources', {'url': 'http://brnonow.com'})
-    
-    # prepare
-    tag_ids = [Tag('article').get_id(), Tag('english').get_id()]
+    source_id = db.insert_update('source', {'url': 'http://brnonow.com'})
     
     # fetch all article urls
     url = 'http://brnonow.com/page/%s'
@@ -51,7 +47,7 @@ def run():
             
             # get title & save article
             title = unicode(decode_unicode_entities(html.find('h1', 'entry-title').string))
-            article_id = db.insert_update('articles', {'title': title, 'url': url, 'source_id': source_id})
+            article_id = db.insert_update('article', {'title': title, 'url': url, 'source_id': source_id})
             
             # get places
             for link in links:
@@ -61,11 +57,9 @@ def run():
                 geocoded = Geocoder(query, resolve_coords=False).fetch()
                 if geocoded:
                     geocoded['name'] = None
-                    place_id = db.insert_update('places', geocoded)
+                    place_id = db.insert_update('place', geocoded)
                     
                     # save relations
-                    for id in tag_ids:
-                        db.insert_update('has_tag', {'place_id': place_id, 'tag_id': id}, last_id=False)
                     db.insert_update('is_about', {'place_id': place_id, 'article_id': article_id}, last_id=False)
             
             db.commit()

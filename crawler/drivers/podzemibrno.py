@@ -16,7 +16,7 @@ import re
 def run():
     # connect to db
     db = Database()
-    source_id = db.insert_update('sources', {'url': 'http://www.podzemi.brno.cz'})
+    source_id = db.insert_update('source', {'url': 'http://www.podzemi.brno.cz'})
     
     # prepare
     tag_id = Tag('underground').get_id()
@@ -38,7 +38,7 @@ def run():
     # fetch all locations
     for a in Downloader('http://www.podzemi.brno.cz').html().find(attrs={'id': 'obsahy-obsah'}).find('td').findAll('a'):
         title = re.sub(r'\s+', ' ', a.string).strip()
-        url = a['href']
+        url = 'http://www.podzemi.brno.cz/' + a['href']
         
         log('article', title)
     
@@ -52,8 +52,8 @@ def run():
         if geocoded:
             log('geocoded', 'yes')
             
-            place_id = db.insert_update('places', geocoded)
-            article_id = db.insert_update('articles', {'title': title, 'url': url, 'source_id': source_id})
+            place_id = db.insert_update('place', geocoded)
+            article_id = db.insert_update('article', {'title': title, 'url': url, 'source_id': source_id})
             
             # save relations
             db.insert_update('has_tag', {'place_id': place_id, 'tag_id': tag_id}, last_id=False)

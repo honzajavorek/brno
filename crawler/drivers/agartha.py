@@ -16,7 +16,7 @@ import re
 def run():
     # connect to db
     db = Database()
-    source_id = db.insert_update('sources', {'url': 'http://www.agartha.cz'})
+    source_id = db.insert_update('source', {'url': 'http://www.agartha.cz'})
     
     # prepare
     tag_id = Tag('agartha-research').get_id()
@@ -56,8 +56,8 @@ def run():
         if geocoded:
             log('geocoded', 'yes')
             
-            place_id = db.insert_update('places', geocoded)
-            article_id = db.insert_update('articles', {'title': title, 'url': url, 'source_id': source_id})
+            place_id = db.insert_update('place', geocoded)
+            article_id = db.insert_update('article', {'title': title, 'url': url, 'source_id': source_id})
             
             # save relations
             db.insert_update('has_tag', {'place_id': place_id, 'tag_id': tag_id}, last_id=False)

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+	<Document>
+		<name>{$title}</name>
+
+		{foreach $icons as $icon}
+			<Style id="{$icon->id}">
+				<IconStyle>
+					<Icon>
+						<href>{!$iconPath}/{!$icon->filename}?v2</href>
+					</Icon>
+				</IconStyle>
+			</Style>
+		{/foreach}
+
+		{foreach $placemarks as $placemark}
+			<Placemark>
+				<name>{$placemark->name}</name>
+				<description><![CDATA[
+					<div class="bubble">
+				        {* <p><em>{foreach $placemark->tags as $tag}{$tag->name}{sep}, {/sep}{/foreach}</em></p> *}
+					    <p><a href="{$placemark->url}"><img src="{if $placemark->photo}{$placemark->photo}{else}http://placehold.it/200x150&text=bez%20obr%C3%A1zku{/if}" title="{$placemark->name}" alt="{$placemark->name}"></a></p>
+					    <p>Celý článek: <a href="{$placemark->url}">{$placemark->name}</a></p>
+					    <p><small>Zdroj: <a href="{$placemark->source}">{$placemark->source}</a></small></p>
+					</div>
+        		]]></description>
+        		<styleUrl>#{$placemark->icon}</styleUrl>
+				<Point>
+					<coordinates>{$placemark->lng},{$placemark->lat}</coordinates>
+				</Point>
+			</Placemark>
+		{/foreach}
+	</Document>
+</kml>

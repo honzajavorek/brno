@@ -16,7 +16,7 @@ import re
 def run():
     # connect to db
     db = Database()
-    source_id = db.insert_update('sources', {'url': 'http://www.kafelanka.cz'})
+    source_id = db.insert_update('source', {'url': 'http://www.kafelanka.cz'})
     
     # prepare
     r_coord = re.compile(ur'mista\[\d+\]\s*=\s*new Array\(([\d\-\.]+),\s+([\d\-\.]+),([^,]+), "([^"]+)", "([^"]+)", "([^"]+)"\);')
@@ -37,8 +37,8 @@ def run():
             if data.group(3).strip(', "\'') == 'neni':
                 tag_ids.append(former_place_tag_id)
             
-            lat = str(float(data.group(1)))
-            lng = str(float(data.group(2)))
+            lat = str(float(data.group(2)))
+            lng = str(float(data.group(1)))
             
             name = data.group(4)
             
@@ -48,8 +48,8 @@ def run():
             article_url = 'http://kafelanka.cz/mista/%s' % data.group(5)
             photo_url = 'http://kafelanka.cz/mista/foto/%s' % data.group(6)
             
-            place_id = db.insert_update('places', geocoded)
-            article_id = db.insert_update('articles', {'title': name, 'url': article_url, 'photo_url': photo_url, 'source_id': source_id})
+            place_id = db.insert_update('place', geocoded)
+            article_id = db.insert_update('article', {'title': name, 'url': article_url, 'photo_url': photo_url, 'source_id': source_id})
             
             # save relations
             for id in tag_ids:
