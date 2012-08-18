@@ -2,9 +2,9 @@
 
 Thematic map layers of Brno city.
 
-## Satus
+## Satus: IDLE
 
-This school project is idle since 2011.
+This my [school](http://fi.muni.cz) project is idle since 2011. [No future, no future for me!](https://www.youtube.com/watch?v=yqrAPOZxgzU)
 
 ## Installation
 
