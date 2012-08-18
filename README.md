@@ -1,13 +1,11 @@
-Brno
-====
+# Brno
 
-Maps dedicated to my beloved city.
+Thematic map layers of Brno city.
 
-Python Requirements
--------------------
+## Satus
 
-Libraries:
+This school project is idle since 2011.
 
--	BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/), `pip install beautifulsoap`
--   MySQLdb (http://mysql-python.sourceforge.net/), `pip install MySQL-python`
+## Installation
 
+Run `pip install -r requirements.txt`.
